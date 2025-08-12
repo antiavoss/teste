@@ -1,0 +1,12 @@
+
+{
+    "arquétipos": {
+        "Visionária": {
+            "descricao": "Você enxerga além das tendências, criando sua própria moda.",
+            "pecas": [
+                {"nome": "Blazer Oversized", "beneficio": "Adiciona presença e autoridade ao look"},
+                {"nome": "Calça Alfaiataria", "beneficio": "Conforto e sofisticação para o dia a dia"}
+            ]
+        }
+    }
+}
