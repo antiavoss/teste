@@ -4,58 +4,35 @@
     "slug": "sobretudo-bell-liso-020417030205p-liso",
     "price": "R$389,90",
     "img": "https://anitavoss.cdn.magazord.com.br/img/2024/05/produto/3116/59.png",
-    "tag": [
-      "Classico",
-      "Dramatico"
-    ]
+    "benefit": {
+      "Soberana": "Estrutura que sustenta sua liderança.",
+      "Visionária": "Base limpa para ousar.",
+      "Romântica": "Camada que acolhe.",
+      "Eterna": "Corte atemporal."
+    }
   },
   {
     "name": "Pantalona Cely",
     "slug": "pantalona-cely-080910041100p",
     "price": "R$426,70",
     "img": "https://anitavoss.cdn.magazord.com.br/img/2024/04/produto/2881/1v9b2551.jpg",
-    "tag": [
-      "Classico"
-    ]
-  },
-  {
-    "name": "Kimono Helo",
-    "slug": "kimono-helo-estampado",
-    "price": "R$189,90",
-    "img": "https://anitavoss.cdn.magazord.com.br/img/2023/05/produto/1843/7u4a0340-1.jpg",
-    "tag": [
-      "Criativo",
-      "Romantico"
-    ]
+    "benefit": {
+      "Soberana": "Queda que empodera.",
+      "Visionária": "Movimento para criar.",
+      "Romântica": "Fluidez suave.",
+      "Eterna": "Linha que alonga."
+    }
   },
   {
     "name": "Top Ingrid",
     "slug": "top-ingrid-preto",
     "price": "R$184,20",
     "img": "https://anitavoss.cdn.magazord.com.br/img/2024/04/produto/2895/1v9b2746.jpg",
-    "tag": [
-      "Moderno",
-      "Classico"
-    ]
-  },
-  {
-    "name": "Calça Luli",
-    "slug": "calca-luli-liso",
-    "price": "R$239,90",
-    "img": "https://anitavoss.cdn.magazord.com.br/img/2023/05/produto/1290/7u4a1062.jpg",
-    "tag": [
-      "NaturalCasual",
-      "Classico"
-    ]
-  },
-  {
-    "name": "Vestido Crystal",
-    "slug": "vestido-crystal-marrom",
-    "price": "R$389,90",
-    "img": "https://anitavoss.cdn.magazord.com.br/img/2023/06/produto/2587/484.jpg",
-    "tag": [
-      "Romantico",
-      "SexySensual"
-    ]
+    "benefit": {
+      "Soberana": "Minimal com presença.",
+      "Visionária": "Recorte contemporâneo.",
+      "Romântica": "Toque macio.",
+      "Eterna": "Básico premium."
+    }
   }
 ]

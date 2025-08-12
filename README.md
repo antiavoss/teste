@@ -1,26 +1,18 @@
-# Equiz Suite (API + Web demo)
+# Equiz Emocional — Anita Voss (Index estático)
+Atualizado em 2025-08-12
 
-Este repositório contém:
-- **api/** — Cloud Run API (Express) com `/health` e `/products?arch=Soberana`.
-- **web/** — Página estática que consome a API e mostra os produtos.
+## Como testar no GitHub Pages
+1. Faça upload de `index.html` e (opcional) `equiz_catalog.json` no repositório.
+2. Ative **Settings → Pages → Deploy from branch → main /(root)**.
+3. Abra a URL gerada. Você pode variar:
+   - `?flow=ab` para versão 2 opções; `?flow=abcd` (default) para 4 opções.
+   - `&catalog=https://.../equiz_catalog.json` para usar catálogo externo (CORS).
 
-## Rodar localmente
-```bash
-cd api
-npm install
-npm start
-# http://localhost:8080/health
-# http://localhost:8080/products?arch=Soberana
-```
-Abra `web/index.html` em um navegador; por padrão ele chama `http://localhost:8080/products?...`
+## Como testar local
+Basta abrir o `index.html` em um navegador. A voz é opcional (botão no topo).
 
-## Deploy no Cloud Run (resumo)
-1. Suba este repositório no GitHub.
-2. No Cloud Run, escolha "Implantação contínua a partir do GitHub".
-3. Em variáveis de ambiente, acrescente `GOOGLE_MERCHANT_ID` (opcional por enquanto).
-4. Conclua o deploy. Teste:
-   - `https://<servico>.run.app/health`
-   - `https://<servico>.run.app/products?arch=Eterna`
+## Notas
+- O texto do cabeçalho substitui “vende benefícios” por “resultado com base em suas escolhas”.
+- Mantém-se o gancho para a Fase 2 (7 estilos) via botão “Descobrir mais do meu estilo” (placeholder).
 
-> A integração com a **Google Content API** pode ser adicionada dentro de `loadCatalog()`.
-> Enquanto isso, a API usa `products_sample.json` como fallback.
+© 2025 Anita Voss — Equiz.

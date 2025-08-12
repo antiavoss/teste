@@ -2,65 +2,296 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Equiz • Demo Produtos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equiz • ANITA VOSS</title>
+<meta name="description" content="Equiz emocional ANITA VOSS — 4 perguntas indiretas, leitura sutil de tempo e resultado com base em suas escolhas.">
 <style>
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto;color:#111;background:#fff;margin:0}
-.wrap{max-width:920px;margin:0 auto;padding:20px}
-h1{font-size:22px;margin:10px 0}
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
-select,button,input{padding:10px 12px;border:1px solid #e3e5ea;border-radius:10px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+:root{--ink:#0b0d12;--mut:#606575;--line:#e7e9ee;--chip:#101114;--accent:#000}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;background:#fff;color:var(--ink);font:500 16px/1.45 Inter, system-ui, -apple-system, Segoe UI, Roboto}
+.wrap{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:clamp(12px,2vw,24px)}
+.card{width:min(880px,100%);background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 10px 40px rgba(0,0,0,.04);overflow:hidden}
+.head{display:flex;gap:12px;align-items:center;padding:16px 16px 0}
+.logo{width:42px;height:42px;border-radius:12px;background:#000}
+.ttl{margin:0;font-size:clamp(18px,2.4vw,26px);font-weight:900;letter-spacing:.2px}
+.muted{color:var(--mut);font-size:13px;margin:.25rem 0 0}
+.inner{padding:16px}
+.bar{height:8px;background:#f1f2f6;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:10px 0 14px}
+.bar>i{display:block;height:100%;width:0;background:#000;transition:width .35s ease}
+.q{font-size:clamp(20px,4.6vw,28px);font-weight:800;margin:8px 0 8px}
+.opts{display:grid;gap:10px;margin-top:6px}
+.opt{background:#fbfbfd;border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;gap:10px;align-items:flex-start;cursor:pointer;transition:transform .08s ease,border-color .15s}
+.opt:hover{transform:translateY(-1px);border-color:#cfd3dd}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn{border:1px solid #000;background:#000;color:#fff;padding:12px 16px;border-radius:14px;cursor:pointer;font-weight:800}
+.btn.ghost{background:#fff;color:#000}
+.center{display:flex;justify-content:center}
+.pill{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border-radius:999px;background:#101114;color:#fff;font-size:12px}
+.res-head{display:flex;flex-direction:column;gap:6px;margin:6px 0 8px}
+.arch{font-size:clamp(22px,5vw,34px);font-weight:900}
+.copy{color:#22242a}
+.sep{height:1px;background:var(--line);margin:12px 0}
+.grid{display:grid;gap:12px;margin-top:12px;grid-template-columns:repeat(2,1fr)}
 @media(min-width:720px){.grid{grid-template-columns:repeat(3,1fr)}}
-.item{border:1px solid #e3e5ea;border-radius:14px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
-img{width:100%;aspect-ratio:3/4;object-fit:cover;background:#f4f5f8}
+.item{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.photo{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:#f2f3f6}
 .itxt{padding:10px;display:flex;flex-direction:column;gap:6px}
-.small{font-size:12px;color:#666}
-.cta{display:inline-block;margin-top:6px;padding:8px 10px;background:#111;color:#fff;border-radius:10px;text-decoration:none;text-align:center}
+.small{font-size:12px;color:var(--mut)}
+.cta{display:inline-block;padding:10px 12px;background:#000;color:#fff;border-radius:11px;font-weight:800;border:1px solid #000;text-align:center}
+.hint{font-size:12px;color:var(--mut);margin-top:8px}
+.fade-in{animation:fade .28s ease both}@keyframes fade{from{opacity:0;transform:translateY(8px)}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Equiz • Produtos por Arquétipo</h1>
-  <div class="controls">
-    <label>Arquétipo
-      <select id="arch">
-        <option>Soberana</option>
-        <option>Visionária</option>
-        <option>Romântica</option>
-        <option selected>Eterna</option>
-      </select>
-    </label>
-    <button id="load">Carregar</button>
-    <input id="api" placeholder="URL da API (ex: https://seu.run.app)" style="flex:1">
-  </div>
-  <div id="out" class="grid"></div>
-</div>
-<script>
-const $=s=>document.querySelector(s);
-$("#api").value = location.origin.includes("localhost") ? "http://localhost:8080" : location.origin;
-
-async function load(){
-  const arch = $("#arch").value;
-  const base = $("#api").value.replace(/\/$/,"");
-  const url = `${base}/products?arch=${encodeURIComponent(arch)}&limit=12`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const html = (data.items||[]).map(it=>`
-    <article class="item">
-      <img src="${it.img}" alt="${it.title}">
-      <div class="itxt">
-        <strong>${it.title}</strong>
-        <div class="small">${it.price||""}</div>
-        <div class="small">${it.benefit||""}</div>
-        <a class="cta" href="https://www.anitavoss.com.br/${it.slug}" target="_blank">Ver na loja</a>
+  <main class="card" aria-live="polite">
+    <header class="head">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1 class="ttl">Equiz Emocional • ANITA VOSS</h1>
+        <p class="muted">4 perguntas indiretas, leitura sutil de tempo e resultado com base em suas escolhas.</p>
       </div>
-    </article>
-  `).join("");
-  $("#out").innerHTML = html || "<p>Nenhum item.</p>";
+    </header>
+
+    <section class="inner" id="intro">
+      <p class="muted">Privacidade: usamos apenas tempo de resposta e clique. Ative a voz se quiser ouvir a leitura.</p>
+      <div class="row">
+        <button class="btn" id="startBtn">Começar</button>
+        <button class="btn ghost" id="voiceToggle" aria-pressed="false">🔈 Voz: desligada</button>
+      </div>
+    </section>
+
+    <section class="inner" id="quiz" hidden>
+      <div class="bar" role="progressbar" aria-label="Essência" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="bar"></i></div>
+      <section id="stage" class="fade-in"></section>
+      <p class="hint">Dica: clique numa opção e eu avanço. Se você refletir por alguns segundos, ajusto a leitura.</p>
+    </section>
+
+    <section class="inner" id="result" hidden></section>
+  </main>
+</div>
+
+<script>
+// ===== Params =====
+const params = new URLSearchParams(location.search);
+const FLOW = params.get('flow') || 'abcd'; // 'ab' ou 'abcd'
+const CATALOG_URL = params.get('catalog'); // JSON externo (lista de produtos)
+
+// ===== Banco de perguntas (Grok order: Q1 -> Q3 -> Q2 -> Q4) =====
+const Q = [
+  { // Q1 sensação (etária implícita)
+    q: "Qual sensação você busca vestir hoje?",
+    ab:[
+      {t:"Comando sutil que organiza o ambiente.", a:"Soberana"},
+      {t:"Paz leve que te deixa à vontade.", a:"Eterna"},
+    ],
+    abcd:[
+      {t:"Comando sutil que organiza o ambiente.", a:"Soberana"},
+      {t:"Vislumbre de horizontes novos.", a:"Visionária"},
+      {t:"Calor de conexões profundas.", a:"Romântica"},
+      {t:"Paz que transcende o tempo.", a:"Eterna"},
+    ]
+  },
+  { // Q3 frase (afetiva, maior MI)
+    q: "Qual frase ecoa em você agora?",
+    ab:[
+      {t:"Eu reino com graça.", a:"Soberana"},
+      {t:"Eu sou atemporal.", a:"Eterna"},
+    ],
+    abcd:[
+      {t:"Eu reino com graça.", a:"Soberana"},
+      {t:"Eu vejo além do visível.", a:"Visionária"},
+      {t:"Eu amo com profundidade.", a:"Romântica"},
+      {t:"Eu sou atemporal.", a:"Eterna"},
+    ]
+  },
+  { // Q2 escolha (comportamental)
+    q: "Numa escolha de estilo, o que mais ressoa?",
+    ab:[
+      {t:"Linhas precisas que afirmam presença.", a:"Soberana"},
+      {t:"Silhuetas clássicas que eternizam beleza.", a:"Eterna"},
+    ],
+    abcd:[
+      {t:"Linhas precisas que afirmam presença.", a:"Soberana"},
+      {t:"Formas inovadoras que desafiam o comum.", a:"Visionária"},
+      {t:"Texturas suaves que contam histórias.", a:"Romântica"},
+      {t:"Silhuetas clássicas que eternizam beleza.", a:"Eterna"},
+    ]
+  },
+  { // Q4 paisagem (expressiva)
+    q: "Se você fosse uma paisagem, qual te representa?",
+    ab:[
+      {t:"Palácio imperial.", a:"Soberana"},
+      {t:"Biblioteca antiga.", a:"Eterna"},
+    ],
+    abcd:[
+      {t:"Palácio imperial.", a:"Soberana"},
+      {t:"Cidade ao amanhecer.", a:"Visionária"},
+      {t:"Jardim em primavera.", a:"Romântica"},
+      {t:"Biblioteca antiga.", a:"Eterna"},
+    ]
+  }
+];
+
+// ===== Textos =====
+const COPY = {
+  Soberana: tone => `Você organiza sem forçar. ${tone==='reflexao'?'Sua pausa soou estratégica — você escuta e decide.':'Sua clareza abre caminho.'}`,
+  Visionária: tone => `Você puxa a cena para frente. ${tone==='reflexao'?'A pausa foi laboratório criativo.':'Sua agilidade vira novidade.'}`,
+  Romântica: tone => `Você cria pertencimento. ${tone==='reflexao'?'A pausa revela cuidado genuíno.':'Sua intuição escolhe o que acolhe.'}`,
+  Eterna: tone => `Você valoriza o essencial. ${tone==='reflexao'?'Refletir burilou sua verdade.':'Decisão limpa, sem ruído.'}`
+};
+
+const INSIGHTS = {
+  Soberana:[
+    "Prefere estrutura a detalhes excessivos; um bom corte faz metade do trabalho.",
+    "Praticidade inteligente: menos ajustes no espelho, melhor.",
+    "Peças‑âncora são sua assinatura (blazer, alfaiataria, sobretudos)."
+  ],
+  Visionária:[
+    "Vê combinação onde outros veem regras — recortes e camadas te energizam.",
+    "Peças com história viram conversa e criam conexão instantânea.",
+    "Troca rotina por experimentação, mantendo coerência pessoal."
+  ],
+  Romântica:[
+    "Seu estilo é lugar de afeto — textura e fluidez importam muito.",
+    "Comunica calor com forma e cor; suavidade é força.",
+    "Busca beleza funcional: se não acolhe, você não leva."
+  ],
+  Eterna:[
+    "Escolhe o que dura — menos, porém melhor.",
+    "Linhas limpas e materiais honestos são irrenunciáveis.",
+    "Guarda‑roupa sistema: combina, repete, libera a mente."
+  ]
+};
+
+// ===== Catálogo (fallback) =====
+let catalog = [
+  {"name":"Sobretudo Bell","slug":"sobretudo-bell-liso-020417030205p-liso","price":"R$389,90","img":"https://anitavoss.cdn.magazord.com.br/img/2024/05/produto/3116/59.png","benefit":{"Soberana":"Estrutura que sustenta sua liderança.","Visionária":"Base limpa para ousar.","Romântica":"Camada que acolhe.","Eterna":"Corte atemporal."}},
+  {"name":"Pantalona Cely","slug":"pantalona-cely-080910041100p","price":"R$426,70","img":"https://anitavoss.cdn.magazord.com.br/img/2024/04/produto/2881/1v9b2551.jpg","benefit":{"Soberana":"Queda que empodera.","Visionária":"Movimento para criar.","Romântica":"Fluidez suave.","Eterna":"Linha que alonga."}},
+  {"name":"Top Ingrid","slug":"top-ingrid-preto","price":"R$184,20","img":"https://anitavoss.cdn.magazord.com.br/img/2024/04/produto/2895/1v9b2746.jpg","benefit":{"Soberana":"Minimal com presença.","Visionária":"Recorte contemporâneo.","Romântica":"Toque macio.","Eterna":"Básico premium."}},
+  {"name":"Calça Maltha","slug":"calca-maltha-liso","price":"R$426,70","img":"https://anitavoss.cdn.magazord.com.br/img/2023/04/produto/806/7u4a2916-3.jpg","benefit":{"Soberana":"Alfaiataria que organiza.","Visionária":"Textura interessante.","Romântica":"Caimento que abraça.","Eterna":"Modelagem limpa."}},
+  {"name":"Kimono Helo","slug":"kimono-helo-estampado","price":"R$189,90","img":"https://anitavoss.cdn.magazord.com.br/img/2023/05/produto/1843/7u4a0340-1.jpg","benefit":{"Soberana":"Camada leve com atitude.","Visionária":"Estampa conversa.","Romântica":"Movimento poético.","Eterna":"Interesse controlado."}},
+  {"name":"Vestido Karin","slug":"vestido-karin-liso","price":"R$349,90","img":"https://anitavoss.cdn.magazord.com.br/img/2023/04/produto/704/dari6357.jpg","benefit":{"Soberana":"Silhueta segura.","Visionária":"Base lisa p/ acessórios.","Romântica":"Fluidez que acolhe.","Eterna":"Timeless."}},
+  {"name":"Vestido Crystal","slug":"vestido-crystal-marrom","price":"R$389,90","img":"https://anitavoss.cdn.magazord.com.br/img/2023/06/produto/2587/484.jpg","benefit":{"Soberana":"Presença suave.","Visionária":"Cor combinável.","Romântica":"Poesia vestível.","Eterna":"Elegância sem esforço."}}
+];
+
+// ===== Estado =====
+let voiceOn=false;
+const S={i:0, essence:0, hes:0, start:0, scores:{Soberana:0,Visionária:0,Romântica:0,Eterna:0}};
+
+// ===== Util =====
+const $=s=>document.querySelector(s);
+function speak(t){ if(!voiceOn) return; if(!('speechSynthesis' in window)) return;
+  const u=new SpeechSynthesisUtterance(t); u.lang='pt-BR'; u.rate=1.02; u.pitch=1.0; u.volume=.92;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
 }
-$("#load").onclick = load;
-load();
+function setBar(){ const pct=Math.min(100,Math.round(S.essence)); $('#bar').style.width=pct+'%'; $('.bar').setAttribute('aria-valuenow',pct); }
+function toneFromDelay(s){ 
+  const conn = navigator.connection?.effectiveType||'';
+  const t = conn.includes('4g')?3.2:conn.includes('5g')?2.8:3.0;
+  return s>t?'reflexao':'direto';
+}
+function utm(slug, arch){
+  const u=new URL('https://www.anitavoss.com.br/'+slug);
+  u.searchParams.set('utm_source','equiz'); u.searchParams.set('utm_medium','quiz');
+  u.searchParams.set('utm_campaign','arquetipo_'+arch.toLowerCase());
+  u.searchParams.set('av_arch',arch); u.searchParams.set('av_view','equiz');
+  return u.toString();
+}
+
+// ===== Flow =====
+function startQuiz(){
+  $('#intro').hidden=true; $('#quiz').hidden=false; S.i=0; S.essence=0; S.hes=0;
+  S.scores={Soberana:0,Visionária:0,Romântica:0,Eterna:0}; setBar(); renderQ();
+}
+function renderQ(){
+  const pack = Q[S.i]; S.start=performance.now();
+  const opts = pack[FLOW] || pack.abcd;
+  $('#stage').innerHTML = `
+    <div class="q">${pack.q}</div>
+    <div class="opts" role="listbox">
+      ${opts.map((o,idx)=>`<label class="opt"><input type="radio" name="opt" value="${idx}" aria-label="${o.t}"><span>${o.t}</span></label>`).join('')}
+    </div>`;
+  document.querySelectorAll('input[name="opt"]').forEach(el=>el.addEventListener('change', onNext));
+  $('#stage').classList.remove('fade-in'); requestAnimationFrame(()=>$('#stage').classList.add('fade-in'));
+}
+function onNext(){
+  const sel = document.querySelector('input[name="opt"]:checked'); if(!sel) return;
+  const dt=(performance.now()-S.start)/1000; const tone=toneFromDelay(dt); if(tone==='reflexao') S.hes++;
+  const pack = Q[S.i]; const opts = pack[FLOW] || pack.abcd; const pick = opts[Number(sel.value)];
+  S.scores[pick.a]+= (tone==='reflexao'?1.5:1); S.essence += 25 + (tone==='reflexao'?3:0); setBar();
+  S.i++; if(S.i<Q.length) renderQ(); else showResult();
+}
+function bestArchetype(){ return Object.entries(S.scores).sort((a,b)=>b[1]-a[1])[0][0]; }
+
+function renderProducts(list, arch){
+  return list.slice(0,9).map(it=>`
+    <article class="item">
+      <img class="photo" src="${it.img}" alt="${it.name}" loading="lazy" decoding="async">
+      <div class="itxt">
+        <div><strong>${it.name}</strong> <span class="small">• ${it.price??''}</span></div>
+        <div class="small">${(it.benefit && it.benefit[arch])? it.benefit[arch] : ''}</div>
+        <a class="cta" href="${utm(it.slug,arch)}" target="_blank" rel="noopener">Ver na loja</a>
+      </div>
+    </article>`).join('');
+}
+
+function showResult(){
+  $('#quiz').hidden=true; const A=bestArchetype(); const tone = S.hes>0?'reflexao':'direto';
+  const head=`Suas escolhas contam uma história sobre sua forma de estar no mundo.`;
+  const line = COPY[A](tone);
+  const insights = INSIGHTS[A].map(t=>`• ${t}`).join(' ');
+  const items = catalog;
+
+  $('#result').innerHTML = `
+    <div class="res-head">
+      <span class="pill">${S.hes} pausa${S.hes===1?'':'s'} consciente${S.hes===1?'':'s'}</span>
+      <div class="arch">${A}</div>
+      <div class="copy">${head}</div>
+      <p class="muted">${line}</p>
+      <div class="sep"></div>
+      <p class="copy"><strong>Leitura terapêutica breve:</strong> ${insights}</p>
+    </div>
+
+    <h3 style="margin:10px 0 6px">Sugestões que combinam com você</h3>
+    <div class="grid">${renderProducts(items, A)}</div>
+
+    <div class="row center" style="margin-top:12px">
+      <button class="btn ghost" id="again">Refazer</button>
+      <a class="btn" id="deep" href="#" onclick="alert('Fase 2 (7 estilos) será adicionada após este teste.');return false;">Descobrir mais do meu estilo</a>
+    </div>
+  `;
+  $('#result').hidden=false;
+  speak(`Seu arquétipo é ${A}. ${line}`);
+  document.getElementById('again').onclick=()=>{ $('#result').hidden=true; $('#intro').hidden=false; };
+}
+
+// ===== Catálogo externo opcional =====
+async function loadCatalog(){
+  if(!CATALOG_URL) return;
+  try{
+    const res = await fetch(CATALOG_URL, {mode:'cors'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    if(Array.isArray(data) && data.length){
+      catalog = data.map(x=>({
+        name: x.name||x.title||'',
+        slug: (x.slug||'') || (x.link? new URL(x.link).pathname.replace('/','') : ''),
+        price: x.price || (x.salePrice?.value? 'R$'+x.salePrice.value : ''),
+        img: x.img || x.imageLink || '',
+        benefit: x.benefit || {},
+      }));
+    }
+  }catch(e){ console.warn('[Equiz] Falha ao carregar catálogo externo:', e); }
+}
+loadCatalog();
+
+// ===== Init =====
+document.getElementById('startBtn').onclick=startQuiz;
+document.getElementById('voiceToggle').onclick=(ev)=>{
+  voiceOn=!voiceOn; ev.currentTarget.setAttribute('aria-pressed',String(voiceOn));
+  ev.currentTarget.textContent = voiceOn?'🔈 Voz: ligada':'🔈 Voz: desligada';
+};
 </script>
 </body>
 </html>
