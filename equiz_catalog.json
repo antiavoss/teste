@@ -1,12 +1,8 @@
-
 {
-    "arquétipos": {
-        "Visionária": {
-            "descricao": "Você enxerga além das tendências, criando sua própria moda.",
-            "pecas": [
-                {"nome": "Blazer Oversized", "beneficio": "Adiciona presença e autoridade ao look"},
-                {"nome": "Calça Alfaiataria", "beneficio": "Conforto e sofisticação para o dia a dia"}
-            ]
-        }
-    }
+    "questions": [
+        { "question": "Qual peça você prefere para um evento à noite?",
+          "options": ["Vestido longo", "Macacão elegante", "Conjunto de alfaiataria"] },
+        { "question": "Qual tecido mais te agrada?",
+          "options": ["Seda", "Linho", "Crepe"] }
+    ]
 }
