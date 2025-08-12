@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equiz • ANITA VOSS — v6.2</title>
+<meta name="description" content="Equiz emocional ANITA VOSS — 4 perguntas com variações e resumo terapêutico por arquétipo.">
+<style>
+:root{--ink:#0b0d12;--mut:#606575;--line:#e7e9ee;--accent:#000;--chip:#101114}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:#fff;color:var(--ink);font:500 16px/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto}
+.wrap{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:clamp(12px,2vw,24px)}
+.card{width:min(880px,100%);background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 10px 40px rgba(0,0,0,.04);overflow:hidden}
+.head{display:flex;gap:12px;align-items:center;padding:16px 16px 0}.logo{width:42px;height:42px;border-radius:12px;background:#000}
+.ttl{margin:0;font-size:clamp(18px,2.6vw,26px);font-weight:900;letter-spacing:.2px}.muted{color:var(--mut);font-size:13px;margin:.25rem 0 0}
+.inner{padding:16px}.bar{height:8px;background:#f1f2f6;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:10px 0 14px}
+.bar>i{display:block;height:100%;width:0;background:#000;transition:width .35s ease}.q{font-size:clamp(20px,4.6vw,28px);font-weight:800;margin:8px 0 8px}
+.opts{display:grid;gap:10px;margin-top:6px}.opt{background:#fbfbfd;border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;gap:10px;align-items:flex-start;cursor:pointer;transition:transform .08s ease,border-color .15s}
+.opt:hover{transform:translateY(-1px);border-color:#cfd3dd}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn{border:1px solid #000;background:#000;color:#fff;padding:12px 16px;border-radius:14px;cursor:pointer;font-weight:800}.btn.ghost{background:#fff;color:#000}.btn.soft{background:#101114;color:#fff;border-color:#101114}.btn.full{flex:1}
+.hint{font-size:12px;color:var(--mut);margin-top:8px}.res-head{display:flex;flex-direction:column;gap:6px;margin:6px 0 8px}.arch{font-size:clamp(22px,5vw,34px);font-weight:900}
+.pill{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border-radius:999px;background:#101114;color:#fff;font-size:12px}
+.grid{display:grid;gap:12px;margin-top:12px;grid-template-columns:repeat(2,1fr)}@media(min-width:720px){.grid{grid-template-columns:repeat(3,1fr)}}
+.item{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.photo{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:#f2f3f6}.photo.av-tone{filter:contrast(1.04) saturate(1.06)}
+.itxt{padding:10px;display:flex;flex-direction:column;gap:6px}.cta{display:inline-block;padding:10px 12px;background:#000;color:#fff;border-radius:11px;font-weight:800;border:1px solid #000;text-align:center}
+.small{font-size:12px;color:var(--mut)}.fade-in{animation:fade .28s ease both}@keyframes fade{from{opacity:0;transform:translateY(8px)}}
+.sep{height:1px;background:var(--line);margin:12px 0}.copy{color:#22242a;white-space:pre-line}footer{padding:10px 16px 18px;color:#7a7f8f;font-size:12px}
+.bullets{display:grid;gap:6px;margin:8px 0 4px}.bullets .chip{display:inline-block;background:#101114;color:#fff;border-radius:999px;padding:6px 10px;font-size:12px}.center{display:flex;justify-content:center}.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap"><main class="card" aria-live="polite">
+<header class="head"><div class="logo" aria-hidden="true"></div><div><h1 class="ttl">Equiz Emocional • ANITA VOSS</h1><p class="muted">4 perguntas indiretas com variações, leitura de tempo e resumo que vende benefícios.</p></div></header>
+<section class="inner" id="intro"><p class="muted">Privacidade: usamos tempo de resposta e cliques para personalizar o resultado. Ative voz se quiser ouvir a leitura.</p>
+<div class="row"><button class="btn" id="startBtn">Começar</button><button class="btn ghost" id="voiceToggle" aria-pressed="false">🔈 Voz: desligada</button></div></section>
+<section class="inner" id="quiz" hidden><div class="bar" role="progressbar" aria-label="Essência" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="bar"></i></div>
+<section id="stage" class="fade-in"></section><p class="hint">Dica: toque em uma opção e eu avanço. Se você refletir por mais de 3 segundos, ajusto a leitura.</p></section>
+<section class="inner" id="result" hidden></section>
+<footer>Beta local — Em produção, os produtos virão da Google Content API com UTM e página de navegação por perfil.</footer>
+</main></div>
+<script>
+let voiceOn=false;const PAGE_SIZE=9;
+const Q_VARIANTS=[
+[{q:"Quando você entra em um lugar, o que espera que fique no ar depois que sair?",opts:[
+{t:"Ordem e respeito.",a:"Soberana"},{t:"Ideias ecoando.",a:"Visionária"},{t:"Calor que aproxima.",a:"Romântica"},{t:"Calma que convida a ficar.",a:"Eterna"}]},
+{q:"Qual presença você mais admira em si mesma quando chega a um ambiente?",opts:[
+{t:"Autoridade tranquila.",a:"Soberana"},{t:"Curiosidade criativa.",a:"Visionária"},{t:"Acolhimento imediato.",a:"Romântica"},{t:"Serenidade estável.",a:"Eterna"}]},
+{q:"Se sua chegada tivesse um efeito, qual seria?",opts:[
+{t:"Organizar o espaço.",a:"Soberana"},{t:"Acender conversas novas.",a:"Visionária"},{t:"Aproximar pessoas.",a:"Romântica"},{t:"Trazer paz.",a:"Eterna"}]}],
+[{q:"Se sua intuição fosse um tecido, qual seria a textura ao toque?",opts:[
+{t:"Brocado firme que sustenta.",a:"Soberana"},{t:"Tule fluido que se reinventa.",a:"Visionária"},{t:"Veludo macio que acolhe.",a:"Romântica"},{t:"Linho sereno e atemporal.",a:"Eterna"}]},
+{q:"Qual sensação de material conversa melhor com a sua pele?",opts:[
+{t:"Estrutura que dá forma.",a:"Soberana"},{t:"Leveza que se transforma.",a:"Visionária"},{t:"Maciez que abraça.",a:"Romântica"},{t:"Naturalidade honesta.",a:"Eterna"}]},
+{q:"Que tipo de acabamento te faz dizer “é isso”?",opts:[
+{t:"Corte preciso.",a:"Soberana"},{t:"Recorte inesperado.",a:"Visionária"},{t:"Caimento suave.",a:"Romântica"},{t:"Linha limpa.",a:"Eterna"}]}],
+[{q:"Qual imagem te energiza agora?",opts:[
+{t:"Palco com holofotes.",a:"Soberana"},{t:"Estúdio criativo em ebulição.",a:"Visionária"},{t:"Jardim ao entardecer.",a:"Romântica"},{t:"Horizonte limpo.",a:"Eterna"}]},
+{q:"Onde você sente que é mais você?",opts:[
+{t:"No comando de uma decisão.",a:"Soberana"},{t:"Explorando uma ideia nova.",a:"Visionária"},{t:"Em um encontro que aquece.",a:"Romântica"},{t:"Num momento simples e verdadeiro.",a:"Eterna"}]},
+{q:"Se seu dia tivesse uma moldura, como seria?",opts:[
+{t:"Geométrica e segura.",a:"Soberana"},{t:"Assimétrica e curiosa.",a:"Visionária"},{t:"Orgânica e suave.",a:"Romântica"},{t:"Minimalista e clara.",a:"Eterna"}]}],
+[{q:"Qual frase combina com o jeito que você quer ser percebida hoje?",opts:[
+{t:"Eu organizo sem esforço.",a:"Soberana"},{t:"Eu inauguro caminhos.",a:"Visionária"},{t:"Eu aproximo e cuido.",a:"Romântica"},{t:"Eu simplifico e clareio.",a:"Eterna"}]},
+{q:"Quando precisa escolher, qual impulso se sobrepõe?",opts:[
+{t:"Clareza direta.",a:"Soberana"},{t:"Curiosidade que testa.",a:"Visionária"},{t:"Empatia pelo conforto.",a:"Romântica"},{t:"Essencial sem ruído.",a:"Eterna"}]},
+{q:"Se pudesse deixar uma mensagem no espelho antes de sair, qual seria?",opts:[
+{t:"Presença é minha assinatura.",a:"Soberana"},{t:"Originalidade me move.",a:"Visionária"},{t:"Gentileza me guia.",a:"Romântica"},{t:"Simplicidade me fortalece.",a:"Eterna"}]}]
+];
+const LONG_TEXT={"Soberana":`Você valoriza o essencial. Não é sobre ter muito, é sobre ter o que realmente importa. Sua presença é percebida antes mesmo de dizer uma palavra. Existe uma clareza silenciosa que inspira confiança e respeito, como alguém que conhece o próprio valor e não precisa provar nada.
+
+Você escolhe com intenção, nas roupas e nas relações. Cada peça que veste é uma extensão da sua voz interna, e por isso você recusa o excesso e o ruído. Sua moda é uma linguagem viva e a sua fala é firme mesmo quando não levanta o tom.
+
+Seus dias pedem praticidade com refinamento. Cortes precisos, cores que comunicam equilíbrio e detalhes que contam histórias só para quem sabe observar. Você não segue tendências. Você cria caminhos ao viver de acordo com a sua própria bússola.
+
+Quando olha para o espelho, não busca aprovação. Busca reconhecimento. E ele aparece na forma como a sua essência se traduz em cada escolha.`,
+"Visionária":`Você enxerga o que ainda não existe. Sua mente conecta peças como quem antevê possibilidades. Em você, roupa não é apenas roupa: é um laboratório vivo onde recortes, texturas e camadas ganham sentido.
+
+Você gosta de experimentar sem perder coerência. Prefere silhuetas que sugerem movimento, combinações que contam histórias e detalhes de design que viram conversa. Sua criatividade não é barulho: é direção.
+
+Quando respira antes de escolher, não é hesitação. É a gestação de uma ideia. Você busca a ressonância que te impulsiona. E quando encontra, acende o ambiente com naturalidade.
+
+Seu estilo é uma assinatura de futuro: conjuga curiosidade com propósito. Quem cruza com você sente que está vendo o começo de algo bom.`,
+"Romântica":`Você cria pertencimento por onde passa. Sua presença traz calor, leveza e um jeito de cuidar sem dizer que está cuidando. Para você, vestir é um gesto de afeto consigo mesma e com o mundo.
+
+Texturas macias, fluidez e cores que abraçam fazem diferença no seu dia. O conforto não é fuga: é força para estar inteira. Você reconhece beleza nos detalhes e transforma rotina em aconchego.
+
+Quando pausa antes de decidir, é porque escuta de verdade o que sente. E isso dá aos seus looks uma honestidade que encanta. Nada em você é excessivo, tudo é sentido.
+
+Seu estilo é a lembrança boa de um abraço. Ele aproxima, acalma e ilumina sem esforço.`,
+"Eterna":`Você escolhe o que dura. Gosta de linhas limpas, materiais honestos e combinações que funcionam em qualquer contexto. Menos, porém melhor. É assim que sua elegância se sustenta.
+
+A simplicidade que você busca não é ausência, é precisão. Cada peça tem um porquê. Sua cartela de cores transmite serenidade e sua forma de usar transmite clareza.
+
+Quando decide rápido, é porque a resposta é simples. Quando pensa um pouco mais, é porque está lapidando a verdade. Em ambos os casos, a coerência prevalece.
+
+Seu estilo é um sistema que libera a mente. Combina, repete, cria repertório. O tempo passa e você continua parecendo você, apenas mais certa do que é.`};
+let catalog=[
+{name:"Sobretudo Bell",slug:"sobretudo-bell-liso-020417030205p-liso",price:"R$389,90",img:"https://anitavoss.cdn.magazord.com.br/img/2024/05/produto/3116/59.png",benefit:{Soberana:"Estrutura que sustenta sua liderança.",Visionária:"Base limpa para ousar.",Romântica:"Camada que abraça.",Eterna:"Corte atemporal."}},
+{name:"Casaco Iriah",slug:"casaco-iriah-liso",price:"R$199,90",img:"https://anitavoss.cdn.magazord.com.br/img/2023/05/produto/1919/7u4a1038-1.jpg",benefit:{Soberana:"Presença imediata.",Visionária:"Neutro para texturas.",Romântica:"Conforto.",Eterna:"Versátil."}},
+{name:"Pantalona Cely",slug:"pantalona-cely-080910041100p",price:"R$426,70",img:"https://anitavoss.cdn.magazord.com.br/img/2024/04/produto/2881/1v9b2551.jpg",benefit:{Soberana:"Queda que empodera.",Visionária:"Movimento para criar.",Romântica:"Fluidez suave.",Eterna:"Linha que alonga."}},
+{name:"Top Ingrid",slug:"top-ingrid-preto",price:"R$184,20",img:"https://anitavoss.cdn.magazord.com.br/img/2024/04/produto/2895/1v9b2746.jpg",benefit:{Soberana:"Minimal com presença.",Visionária:"Recorte contemporâneo.",Romântica:"Toque macio.",Eterna:"Básico premium."}},
+{name:"Calça Maltha",slug:"calca-maltha-liso",price:"R$426,70",img:"https://anitavoss.cdn.magazord.com.br/img/2023/04/produto/806/7u4a2916-3.jpg",benefit:{Soberana:"Alfaiataria que organiza.",Visionária:"Textura interessante.",Romântica:"Caimento que abraça.",Eterna:"Modelagem limpa."}},
+{name:"Kimono Helo",slug:"kimono-helo-estampado",price:"R$189,90",img:"https://anitavoss.cdn.magazord.com.br/img/2023/05/produto/1843/7u4a0340-1.jpg",benefit:{Soberana:"Camada leve com atitude.",Visionária:"Estampa conversa.",Romântica:"Movimento poético.",Eterna:"Interesse controlado."}},
+{name:"Vestido Karin",slug:"vestido-karin-liso",price:"R$349,90",img:"https://anitavoss.cdn.magazord.com.br/img/2023/04/produto/704/dari6357.jpg",benefit:{Soberana:"Silhueta segura.",Visionária:"Base lisa para acessórios.",Romântica:"Fluidez que acolhe.",Eterna:"Timeless."}},
+{name:"Vestido Crystal",slug:"vestido-crystal-marrom",price:"R$389,90",img:"https://anitavoss.cdn.magazord.com.br/img/2023/06/produto/2587/484.jpg",benefit:{Soberana:"Presença suave.",Visionária:"Cor combinável.",Romântica:"Poesia vestível.",Eterna:"Elegância sem esforço."}},
+{name:"Top Maria Alice",slug:"top-maria-alice-liso",price:"R$179,90",img:"https://anitavoss.cdn.magazord.com.br/img/2023/04/produto/719/dari5903.jpg",benefit:{Soberana:"Base firme.",Visionária:"Minimal para camadas.",Romântica:"Delicado.",Eterna:"Essencial inteligente."}},
+{name:"Calça Luli",slug:"calca-luli-liso",price:"R$239,90",img:"https://anitavoss.cdn.magazord.com.br/img/2023/05/produto/1290/7u4a1062.jpg",benefit:{Soberana:"Cintura no lugar.",Visionária:"Aceita experimentos.",Romântica:"Conforto gentil.",Eterna:"Simples e versátil."}},
+{name:"Calça Ivone",slug:"calca-ivone-vermelho",price:"R$419,90",img:"https://anitavoss.cdn.magazord.com.br/img/2023/02/produto/177/7u4a3216.jpg",benefit:{Soberana:"Cor que comanda.",Visionária:"Ponto focal.",Romântica:"Vibração quente.",Eterna:"Clássica com energia."}},
+{name:"Blusa Larissa",slug:"blusa-larissa-03-preto",price:"R$239,90",img:"https://anitavoss.cdn.magazord.com.br/img/2023/05/produto/1867/7u4a0807-1.jpg",benefit:{Soberana:"Base polida.",Visionária:"Textura conversa.",Romântica:"Toque gentil.",Eterna:"Curva certa."}}
+];
+const S={i:0,essence:0,hes:0,start:0,scores:{Soberana:0,Visionária:0,Romântica:0,Eterna:0},plan:[]};let page=0;
+const $=s=>document.querySelector(s);
+function speak(t){if(!voiceOn)return;if(!('speechSynthesis'in window))return;const u=new SpeechSynthesisUtterance(t);u.lang='pt-BR';u.rate=1.02;u.pitch=1.0;u.volume=.92;speechSynthesis.cancel();speechSynthesis.speak(u)}
+function setBar(){const pct=Math.min(100,Math.round(S.essence));document.getElementById('bar').style.width=pct+'%';document.querySelector('.bar').setAttribute('aria-valuenow',pct)}
+function toneFromDelay(s){return s>3?'reflexao':'direto'}function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function utm(slug,arch){const u=new URL('https://www.anitavoss.com.br/'+slug);u.searchParams.set('utm_source','equiz');u.searchParams.set('utm_medium','quiz');u.searchParams.set('utm_campaign','arquetipo_'+arch.toLowerCase());u.searchParams.set('av_arch',arch);u.searchParams.set('av_view','equiz');return u.toString()}
+function buildPlan(){const last=JSON.parse(localStorage.getItem('equiz_last_set')||'{}');const chosenIdx=[];Q_VARIANTS.forEach((slot,i)=>{let idx=Math.floor(Math.random()*slot.length);if(slot.length>1&&last['s'+i]===idx){idx=(idx+1)%slot.length}chosenIdx.push(idx)});localStorage.setItem('equiz_last_set',JSON.stringify({'s0':chosenIdx[0],'s1':chosenIdx[1],'s2':chosenIdx[2],'s3':chosenIdx[3]}));S.plan=[Q_VARIANTS[0][chosenIdx[0]],Q_VARIANTS[1][chosenIdx[1]],Q_VARIANTS[2][chosenIdx[2]],Q_VARIANTS[3][chosenIdx[3]]]}
+function startQuiz(){document.getElementById('intro').hidden=true;document.getElementById('quiz').hidden=false;S.i=0;S.essence=0;S.hes=0;S.scores={Soberana:0,Visionária:0,Romântica:0,Eterna:0};buildPlan();setBar();renderQ()}
+function renderQ(){const pack=S.plan[S.i];S.start=performance.now();document.getElementById('stage').innerHTML=`<div class="q">${pack.q}</div><div class="opts" role="listbox">${pack.opts.map((o,idx)=>`<label class="opt"><input type="radio" name="opt" value="${idx}" aria-label="${o.t}"><span>${o.t}</span></label>`).join('')}</div>`;document.querySelectorAll('input[name="opt"]').forEach(el=>{el.addEventListener('change',()=>onNext())});const st=document.getElementById('stage');st.classList.remove('fade-in');requestAnimationFrame(()=>st.classList.add('fade-in'))}
+function onNext(){const sel=document.querySelector('input[name="opt"]:checked');if(!sel){return}const dt=(performance.now()-S.start)/1000;const tone=toneFromDelay(dt);if(tone==='reflexao')S.hes++;const pack=S.plan[S.i];const pick=pack.opts[Number(sel.value)];S.scores[pick.a]+=(tone==='reflexao'?1.5:1);S.essence+=25+(tone==='reflexao'?3:0);setBar();S.i++;if(S.i<4)renderQ();else showResult()}
+function bestArchetype(){const arr=Object.entries(S.scores).sort((a,b)=>b[1]-a[1]);return arr[0][0]}
+function pickProducts(a){const pref={Soberana:["sobretudo-bell","casaco-iriah","pantalona-cely"],Visionária:["top-ingrid","calca-maltha","kimono-helo"],Romântica:["vestido-crystal","blusa-larissa","top-maria-alice"],Eterna:["vestido-karin","calca-ivone","calca-luli"]}[a]||[];const chosen=catalog.filter(c=>pref.some(s=>c.slug.includes(s)));const pool=catalog.filter(c=>!chosen.includes(c));while(chosen.length<catalog.length&&pool.length)chosen.push(pool.shift());return chosen}
+function renderProducts(list,arch){const start=page*PAGE_SIZE;const slice=list.slice(start,start+PAGE_SIZE);return slice.map(it=>`<article class="item"><img class="photo av-tone" src="${it.img}" alt="${it.name}" loading="lazy" decoding="async"><div class="itxt"><div><strong>${it.name}</strong> <span class="small">• ${it.price??''}</span></div><div class="small">${(it.benefit&&it.benefit[arch])?it.benefit[arch]:''}</div><a class="cta" href="${utm(it.slug,arch)}" target="_blank" rel="noopener">Ver na loja</a></div></article>`).join('')}
+function showResult(){document.getElementById('quiz').hidden=true;const A=bestArchetype();const long=LONG_TEXT[A]||"";const items=pickProducts(A);page=0;document.getElementById('result').innerHTML=`<div class="res-head"><span class="pill">${S.hes} pausa${S.hes===1?'':'s'} consciente${S.hes===1?'':'s'}</span><div class="arch">${A}</div><div class="copy">${long}</div></div><div class="sep"></div><h3 style="margin:0 0 6px">Sugestões que materializam seu estilo</h3><div id="grid" class="grid">${renderProducts(items,A)}</div><div class="row center" id="rowMore"></div><div class="row" style="margin-top:10px"><button class="btn ghost" id="again">Refazer</button><a class="btn soft" id="exploreSite" href="https://www.anitavoss.com.br/novidades?utm_source=equiz&utm_medium=quiz&utm_campaign=arquetipo_${A.toLowerCase()}&av_arch=${A}&av_view=equiz" target="_blank" rel="noopener">Explorar no site</a><button class="btn" id="deepBtn">Descobrir mais do meu perfil</button></div>`;const moreBtn=document.createElement('button');moreBtn.className='btn ghost';moreBtn.textContent='Ver mais';document.getElementById('rowMore').appendChild(moreBtn);const grid=document.getElementById('grid');const renderMore=()=>{page++;const next=items.slice(page*PAGE_SIZE,(page+1)*PAGE_SIZE);if(next.length===0){moreBtn.disabled=true;moreBtn.textContent='Tudo visto';return}grid.insertAdjacentHTML('beforeend',renderProducts(items,A))};moreBtn.addEventListener('click',renderMore);document.getElementById('result').hidden=false;const openLine={"Soberana":"Você organiza o ambiente sem elevar o tom. Sua clareza abre caminho.","Visionária":"Você puxa a cena para frente. Sua curiosidade vira direção.","Romântica":"Você cria pertencimento. Sua gentileza transforma o clima.","Eterna":"Você valoriza o essencial. Decisão limpa, sem ruído."}[A];speak(`Seu arquétipo é ${A}. ${openLine}`);document.getElementById('again').onclick=()=>{document.getElementById('result').hidden=true;document.getElementById('intro').hidden=false};document.getElementById('deepBtn').onclick=()=>{alert('Fase 2 (Estilos Universais) virá como arquivo separado para manter estabilidade.')}}
+document.getElementById('startBtn').onclick=startQuiz;document.getElementById('voiceToggle').onclick=(ev)=>{voiceOn=!voiceOn;ev.currentTarget.setAttribute('aria-pressed',String(voiceOn));ev.currentTarget.textContent=voiceOn?'🔈 Voz: ligada':'🔈 Voz: desligada'};
+(function sim(){const names=["Ana","Bianca","Clara","Duda","Eva"];const arches=["Soberana","Visionária","Romântica","Eterna"];const out=[];for(let i=0;i<5;i++){out.push({user:names[i],arch:arches[Math.floor(Math.random()*4)],hes:Math.random()<.5})}console.log("Simulação Equiz (5 usuárias) →",out)})();
+</script>
+</body>
+</html>
