@@ -1,59 +1,19 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ANITA VOSS • Equiz (Quântico MVP)</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Quântico</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="topbar">
-  <div class="brand">ANITA VOSS • Equiz</div>
-  <div class="pill">Quântico • MVP</div>
-</header>
-
-<main class="wrap">
-  <!-- Consentimento -->
-  <section id="consent" class="card">
-    <h1>Vamos ler sua essência?</h1>
-    <p class="muted">Usamos voz IA (opcional), tempo de resposta (hesitação &gt;3s) e interações para personalizar recomendações. Você concorda?</p>
-    <div class="row">
-      <button id="btnAccept" class="btn">Aceito</button>
-      <button id="btnDecline" class="btn ghost">Somente essencial</button>
+    <div class="quiz-container">
+        <h1>Quiz Quântico</h1>
+        <div id="quiz"></div>
+        <button id="submit">Enviar Respostas</button>
+        <div id="results"></div>
     </div>
-  </section>
-
-  <!-- Quiz -->
-  <section id="quiz" class="card hidden">
-    <div class="progress"><div id="bar" class="bar"></div></div>
-    <p id="step" class="muted">Pergunta 1 de 4</p>
-    <h2 id="qtitle" class="title">Carregando…</h2>
-    <div id="opts" class="options"></div>
-    <div class="row">
-      <button id="btnBack" class="btn ghost" disabled>Voltar</button>
-      <button id="btnNext" class="btn" disabled>Próxima</button>
-    </div>
-  </section>
-
-  <!-- Resultado -->
-  <section id="result" class="card hidden">
-    <div class="progress"><div class="bar full"></div></div>
-    <h2 class="title" id="archTitle">Seu arquétipo</h2>
-    <p class="muted" id="archCopy"></p>
-    <div class="tags" id="tags"></div>
-    <div class="row">
-      <button id="btnSee" class="btn">Ver curadoria</button>
-      <button id="btnRetry" class="btn ghost">Refazer</button>
-    </div>
-    <div id="grid" class="grid"></div>
-  </section>
-</main>
-
-<footer class="foot">© 2025 ANITA VOSS — Equiz Quântico MVP</footer>
-
-<!-- AR-lite decorativo (sem libs externas) -->
-<canvas id="bg" class="bg" aria-hidden="true"></canvas>
-
-<script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
